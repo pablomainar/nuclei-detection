@@ -1,5 +1,10 @@
 # nuclei-detection
 
-This project is my solution to the 2018 Data Science Bowl held in Kaggle. This was my first competition in Kaggle. I started the competition quite late, when there were only 9 days to finish. Therefore I only had time to build a very simple CNN and I finished in position 638 out of 3634 (top 18%). 
+This project is my solution to the 2018 Data Science Bowl held in Kaggle. You can see the competition rules and data in this link: https://www.kaggle.com/c/data-science-bowl-2018. This was my first competition in Kaggle. I started the competition quite late, when there were only 9 days to finish. Therefore I only had time to build a very simple CNN and I finished in position 638 out of 3634 (top 18%) with a score of 0.235. However, since my goal was to learn and not to compete, I spent a few weeks more tryingto improve my solution after the competition had finished. With the final solution that can be found here I obtained a score of 0.358 that would have rised me to position 521 (top 14%).
+My main limitation was my available hardware. I could only use my old laptop to do everything, so I did not have acces to a GPU and the RAM was very limited. This meant that training was painfully slow and uncomfortable, the CNN was forced to be relatively shallow and Icould not use any pre-trained net like VGG or ResNet to initialize it, so I had to train it from scratch.
+All this said, these are the main aspects of my solution:
+- It is based on U-Net (https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/).
+- Since this is an instance segmentation problem the training is done end-to-end and there is no need for fully connected layers. This allows meto use any size of image as input/output, which is an advantage given that both the train and test images have very different sizes. To simplify things, training is done with random crops of 256x256 pixels, while the test images are processed "as they are", without resizing them.
+- Heavy data augmentation: We only had 670 images to train with, so to generalize better and avoid overfitting it was crucial to do data augmentation. As said before, random crops of 256x256 pixels are used from the training images. To this crops I also apply rotation, vertical/horizontal flipping, random cropping, rgb channel shuffle, gaussian noise and average/gaussian blurring.
 
 
