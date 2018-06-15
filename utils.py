@@ -2,7 +2,9 @@
 """
 Created on Mon Jun  4 18:38:36 2018
 
-@author: pablo
+@author: pablomainar
+
+Script with utility functions. Some of them might not even be used anymore
 """
 import numpy as np
 import matplotlib.pyplot as plt
@@ -44,7 +46,6 @@ def visualize(X,Y,index=None):
     plt.show()
     
     
-#TO-DO implement more data augmentation ways
 def augmentData(X,Y):
     Xaug = np.zeros(X.shape).astype(np.int16)
     Yaug = np.zeros(Y.shape).astype(np.int16)
@@ -150,8 +151,6 @@ def augmentDataTwoOutputs(X,Ylab,Ycont):
             Ylabaug[i] = Ylab[i]
             Ycontaug[i] = Ycont[i]
     return Xaug.astype(np.int16),Ylabaug.astype(np.int16),Ycontaug.astype(np.int16)
-    
-    
     
     
 def unpad_test(im,pad_h,pad_w):
