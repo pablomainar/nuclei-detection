@@ -1,16 +1,14 @@
-# -*- coding: utf-8 -*-
 """
 Created on Fri Jun 15 09:15:18 2018
+
+Sript that creates file to submit
 
 @author: pablo
 """
 
-
-
 import numpy as np
 import pandas as pd
 import os
-os.chdir('/home/pablo/Documents/NucleiCompetition/Nuclei')
 from skimage.io import imread
 from skimage.transform import resize
 from skimage.color import gray2rgb
@@ -24,11 +22,10 @@ from utils import *
 
 
 
-#%%
 # Constant variables
-TEST_PATH = '/home/pablo/Documents/NucleiCompetition/Nuclei/Data/stage2_test_final'
-OUTPUT_PATH = '/home/pablo/Documents/NucleiCompetition/Nuclei/Models/validation_models'
-SUBMISSION_PATH = '/home/pablo/Documents/NucleiCompetition/Nuclei/Submissions/'
+TEST_PATH = '/home/pablo/Documents/NucleiCompetition/Nuclei/Data/stage2_test_final' #Path to the test images
+OUTPUT_PATH = '/home/pablo/Documents/NucleiCompetition/Nuclei/Models/validation_models' #Path to the model
+SUBMISSION_PATH = '/home/pablo/Documents/NucleiCompetition/Nuclei/Submissions/' #Path to the submissions folder
 H = 128
 W = 128
 C = 3
@@ -37,10 +34,7 @@ test_names_all = os.listdir(TEST_PATH)
 
 thresh_lab = 0.6
 thresh_cont = 0.5
-    
-
-#%%
-
+  
 
 for j in range(0,6):
     if j == 0:
@@ -123,18 +117,11 @@ for j in range(0,6):
             Y[i] = ndimage.binary_fill_holes(Y[i])
             Y[i] = label(Y[i])
             Y[i] = dilation(Y[i])
-        #X_test[i] = unpad_test(X_test[i],pads_h[i],pads_w[i])    
     
     
-        
-    
-
-    #Y_test = watershed_segmentation(Y_test)
 
     prepareSubmission_new(test_names,Y,SUBMISSION_PATH+'gen'+str(j+1)+'.csv')
 
-
-#%%
 
 results = pd.read_csv(SUBMISSION_PATH+'gen1.csv')
 for i in range(2,7):

@@ -1,7 +1,7 @@
-1
-# -*- coding: utf-8 -*-
 """
 Created on Mon Jun  4 19:44:58 2018
+
+This scripts contains the function to create the deep nets. 
 
 @author: pablo
 """
@@ -17,6 +17,7 @@ from keras.utils.data_utils import get_file
 
 WEIGHTS_PATH_NO_TOP = 'https://github.com/fchollet/deep-learning-models/releases/download/v0.1/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5'
 
+# U-Net with one branch for segmentation.
 def create_unet(H,W,C=3):
     # CNN architecture
     # Build U-Net model
@@ -69,7 +70,7 @@ def create_unet(H,W,C=3):
     return model
     
     
-    
+# U-Net with two branches: one for segmentation andthe other for the contours
 def create_unet_twoOutputs(C=3):
     inputs = Input(shape=(None,None,C))
     s = Lambda(lambda x: x / 255.0) (inputs)
@@ -142,7 +143,7 @@ def create_unet_twoOutputs(C=3):
     return model
     
 
-    
+# U-Net with VGG16 structure and initialization. It is too big for my laptop :(
 def create_unet_vgg16(C=3):
     inputs = Input(shape=(None,None,C))
     s = Lambda(lambda x: x / 255.0) (inputs)

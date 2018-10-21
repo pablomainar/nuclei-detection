@@ -1,3 +1,9 @@
+"""
+
+Script with utility functions related to the submission: RLE encoding and submission preparation
+
+"""
+
 from skimage.morphology import label
 from skimage.transform import resize
 import pandas as pd

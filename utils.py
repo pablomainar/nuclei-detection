@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 """
 Created on Mon Jun  4 18:38:36 2018
 
-@author: pablomainar
-
 Script with utility functions. Some of them might not even be used anymore
+
+@author: pablo
 """
 import numpy as np
 import matplotlib.pyplot as plt

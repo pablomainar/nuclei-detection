@@ -1,28 +1,37 @@
-# -*- coding: utf-8 -*-
 """
 Created on Tue Jun 12 10:49:22 2018
+
+This script preprocess the original data so it is ready to train. It creates crops of the images.
 
 @author: pablo
 """
 
 import numpy as np
 import os
-os.chdir('/home/pablo/Documents/NucleiCompetition/Nuclei')
 from utils import *
 
 
-TRAIN_PATH = '/home/pablo/Documents/NucleiCompetition/Nuclei/Data/stage1_train'
+TRAIN_PATH = '/home/pablo/Documents/NucleiCompetition/Nuclei/Data/stage1_train' #Path to the training images and labels
 train_names = os.listdir(TRAIN_PATH)
 train_number = len(train_names)
 
-crop = 256
+crop = 256 #Size ofthe crops: 256x256
 
-#%%
-#Crop the images in blocks of 256x256 pixels
+# Prepare directories where the preprocessed data will be saved
+if os.path.isdir('PreprocessedData/') == False:
+    os.mkdir('PreprocessedData/')
+    os.mkdir('PreprocessedData/Y_labels/')
+    os.mkdir('PreprocessedData/Y_cont/')
+if os.path.isdir('PreprocessedData/Y_labels/') == False:
+    os.mkdir('PreprocessedData/Y_labels/')
+if os.path.isdir('PreprocessedData/Y_cont/') == False:
+    os.mkdir('PreprocessedData/Y_cont/')
 
+
+# Crop the training images
 X = np.zeros((1,crop,crop,3)).astype(np.int16)
 for im in range(0,train_number):
-    print(im)
+    print('Image '+str(im))
     path = os.path.join(TRAIN_PATH,train_names[im],'images',train_names[im]+'.png')
     image = imread(path)
     if len(image.shape) < 3:
@@ -42,14 +51,11 @@ X = X[1:]
 
 np.save('PreprocessedData/X.npy',X)
 
-#%%
-# Prepare the labels and contours
 
+# Prepare the labels and contours
 for i in range(0,train_number):
-    print('Doing train image '+str(i))
+    print('Labels and contorus '+str(i))
     mask_names = os.listdir(os.path.join(TRAIN_PATH,train_names[i],'masks'))
-    
-    
     mask_final = imread(os.path.join(TRAIN_PATH,train_names[i],'masks',mask_names[0]))
     im_cont = np.zeros(mask_final.shape)
     mask_final = np.zeros((mask_final.shape))
@@ -67,10 +73,8 @@ for i in range(0,train_number):
     np.save('PreprocessedData/Y_labels/'+train_names[i]+'.npy',mask_final)
     np.save('PreprocessedData/Y_cont/'+train_names[i]+'.npy',im_cont)
 
-
-#%%
-# Crop the labels and contours in blocks of 256x256 pixels
-
+    
+# Create crops of labels and contours
 Ylab = np.zeros((1,crop,crop)).astype(np.int8)
 Ycont = np.zeros((1,crop,crop)).astype(np.int8)
 for im in range(0,train_number):
@@ -97,14 +101,10 @@ np.save('PreprocessedData/Ylab.npy',Ylab)
 np.save('PreprocessedData/Ycont.npy',Ycont)
 
 
-#%%
 #Check a few images to make sure that everything is ok
-
 X = np.load('PreprocessedData/X.npy')
 Ylab = np.load('PreprocessedData/Ylab.npy')
 Ycont = np.load('PreprocessedData/Ycont.npy')
 
-#%%
-
-visualize(X,Ycont,965)
+visualize(X,Ycont,965) #Change the last number to see other image
 

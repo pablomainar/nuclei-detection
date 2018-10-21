@@ -1,55 +1,36 @@
-# -*- coding: utf-8 -*-
 """
 Created on Mon Jun 11 12:27:04 2018
+
+Script to evaluate test images with Intersection Over Union
 
 @author: pablo
 """
 
-
 import numpy as np
-import pandas as pd
 import os
-os.chdir('/home/pablo/Documents/NucleiCompetition/Nuclei')
-from scipy.stats import mode
 from skimage.io import imread
-from skimage.transform import resize
 from skimage.color import gray2rgb
 from skimage.morphology import label,opening,closing,erosion,dilation
 from scipy import ndimage
-
 from RLE import *
 from utils import *
-
 import matplotlib.pyplot as plt
 from matplotlib import cm
-from mpl_toolkits.mplot3d import Axes3D
-
 import cv2
-
 from keras.models import Model, load_model
-from keras.layers import Input
-from keras.layers.core import Lambda
-from keras.layers.convolutional import Conv2D, Conv2DTranspose
-from keras.layers.pooling import MaxPooling2D
-from keras.layers.merge import concatenate
-from keras.callbacks import EarlyStopping, ModelCheckpoint
-from keras import backend as K
-
-import tensorflow
-
 import random
 
+
 # Constant variables
-TEST_PATH = '/home/pablo/Documents/NucleiCompetition/Nuclei/Data/stage1_train'
-OUTPUT_PATH = '/home/pablo/Documents/NucleiCompetition/Nuclei/Models/validation_models'
-C = 3
+TEST_PATH = '/home/pablo/Documents/NucleiCompetition/Nuclei/Data/stage1_train'#Path to the training images. It has to be training and not test because we don't have ground truth for test images.
+OUTPUT_PATH = '/home/pablo/Documents/NucleiCompetition/Nuclei/Models/validation_models' #Path to the model to load
+C = 3 #Number of channels
 
 # Load the testing data
 test_names = os.listdir(TEST_PATH)
 random.shuffle(test_names)
 test_number = len(test_names)
 test_number = 2
-
 
 
 X_test = [0] * test_number
@@ -69,7 +50,6 @@ for i in np.arange(0,test_number):
     path = os.path.join(TEST_PATH,test_names[i],'masks','*.png')
     masks = skimage.io.imread_collection(path).concatenate()
     Y_true[i] = masks
-#%%
 
 
 Y_lab_test = [0] * test_number
@@ -84,16 +64,10 @@ for i in range(0,test_number):
     Y_cont_test[i] = unpad_test(temp_cont[0],pads_h[i],pads_w[i])
     X_test[i] = unpad_test(X_test[i],pads_h[i],pads_w[i])
     
-#%%
-    
-    
     
 thresh_lab = 0.5
-#avg = []
 thresh_cont_range = np.arange(0.3,1.01,0.1)
 thresh_lab_range = np.arange(0.3,1.0,0.1)
-#thresh_lab_range = [0.5]
-#thresh_cont_range = [0.5]
 
 r = -1
 avg = np.zeros((len(thresh_lab_range),len(thresh_cont_range)))
@@ -110,21 +84,22 @@ for thresh_lab in thresh_lab_range:
             Y_pred[i] = (lab >= thresh_lab) & (cont <= thresh_cont)
             Y_pred[i] = Y_pred[i].astype(np.int16)      
             Y_pred[i] = ndimage.binary_fill_holes(Y_pred[i])
+            # It can be played with the morphological functions below to see which gives better accuracy
             #Y_pred[i] = opening(Y_pred[i]) 
             #Y_pred[i] = closing(Y_pred[i]) 
             #Y_pred[i] = erosion(Y_pred[i])
             #Y_pred[i] = watershed_segmentation(np.expand_dims(Y_pred[i],0))[0]
             Y_pred[i] = label(Y_pred[i])
             Y_pred[i] = dilation(Y_pred[i])
-        #avg.append(computeIoU(X_test,Y_true,Y_pred,verbose=0,return_all_pred=False))
         avg[r,c] = computeIoU(X_test,Y_true,Y_pred,verbose=0,return_all_pred=False)
-#%%
-             
-        
-        
-#%%
-plt.plot(thresh_cont_range,avg)
 
+plt.plot(thresh_cont_range,avg)
+exit()
+
+
+
+# From down here there are different dirty visualizations that I keep in case I come back to this challenge
+'''
 #%%
 fig = plt.figure()
 ax = fig.gca(projection='3d')
@@ -168,7 +143,7 @@ for i in range(0,num_samples):
     labels = np.zeros((height, width), np.uint16)
     for index in range(0, num_masks):
         labels[masks[index] > 0] = index + 1
-    
+'''   
     
     
     
